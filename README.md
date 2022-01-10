@@ -132,7 +132,7 @@ Installation for Ubuntu 20 LTS:
   
   
 - cp -R extern ~/Development/bulk_extractor/src  
-- cp scan_bitcoin.flex scan_domains.flex scan_hwallets.flex scan_mnemonics.flex scan_monero.flex scan_torurls.flex scan_ethereum.flex ~/Development/bulk_extractor/src  
+- cp scan_bitcoin.flex scan_domains.flex domains_list.csv scan_hwallets.flex scan_mnemonics.flex scan_monero.flex scan_torurls.flex scan_ethereum.flex ~/Development/bulk_extractor/src  
   
   
 - cd ~/Development/bulk_extractor/  
