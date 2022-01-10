@@ -1,7 +1,8 @@
 # bulk_extractor_2_plugins
 Digital currency and more plugins for bulk_extractor version 2.0 beta
 # bulk_extractor_plugins
-Digital currency plugins for bulk_extractor version 1.6.0  
+Digital currency and more plugins for [bulk_extractor](https://github.com/simsong/bulk_extractor) version 2.0 beta by @simsong
+
 
 If you are looking for predecessor plugins: https://github.com/cc-code-public/bulk_extractor_1_6_plugins
 
@@ -46,30 +47,98 @@ The file has to be located in the current execution path
 Installation for Ubuntu 20 LTS:
 -------------------------------------------------
 
-sudo apt install git  
-sudo apt install sleuthkit libafflib-dev libewf-dev  
+- sudo apt install git  
+- sudo apt install sleuthkit libafflib-dev
 (Others as require. For example: sudo apt install libsqlite3-dev)  
 
-mkdir ~/Development  
-cd ~/Development  
-git clone https://github.com/simsong/bulk_extractor.git --recursive  
+- mkdir ~/Development  
+- cd ~/Development  
+- git clone https://github.com/simsong/bulk_extractor.git --recursive  
 (INFO: bulk_extractor version 2.0. Do not forget that **recursive**, because there are dependencies to other repositories now!)  
-cd bulk_extractor  
-bash etc/CONFIGURE_UBUNTU20LTS.bash  
-mv src/Makefile.am src/Makefile.am.bak  
-mv src/bulk_extractor_scanners.h src/bulk_extractor_scanners.h.bak  
+- cd bulk_extractor  
+- bash etc/CONFIGURE_UBUNTU20LTS.bash  
+(Or any other suitable script in the etc directory. Otherwise you will have to install the dependencies by hand.)
 
-cd ~/Development  
-git clone https://github.com/cc-code-public/bulk_extractor_2_plugins.git  
-cd bulk_extractor_2_plugins  
+- cp src/Makefile.am src/Makefile.am.bak  
+- ***Add*** to _src/Makefile.am_:  
+  - Extend the variable **CLEANFILES** with:  
+  "scan_bitcoin.cpp scan_monero.cpp scan_domains.cpp scan_ethereum.cpp scan_hwallets.cpp scan_mnemonics.cpp scan_torurls.cpp"  
 
-cp -R extern ~/Development/bulk_extractor/src  
-cp Makefile.am bulk_extractor_scanners.h scan_bitcoin.flex scan_domains.flex scan_hwallets.flex scan_mnemonics.flex scan_monero.flex scan_torurls.flex scan_ethereum.flex ~/Development/bulk_extractor/src  
+  As an example, the passage in the file could look like this:
+  ```
+  CLEANFILES     = scan_accts.cpp scan_base16.cpp scan_email.cpp scan_gps.cpp \
+   scan_bitcoin.cpp scan_monero.cpp scan_domains.cpp scan_ethereum.cpp scan_hwallets.cpp scan_mnemonics.cpp scan_torurls.cpp \
+   be13_api/config.h be13_api/dfxml/src/config.h config.h *.d *~
+  ```  
 
-cd ~/Development/bulk_extractor/  
-bash bootstrap.sh  
-./configure  
-make  
+  - Extend the variable **flex_scanners** with:  
+  "scan_bitcoin.flex \  
+   extern/Keccak-more-compact.h extern/Keccak-more-compact.c \  
+   scan_monero.flex \  
+   scan_ethereum.flex \  
+   scan_hwallets.flex \  
+   scan_mnemonics.flex \  
+   scan_domains.flex \  
+   scan_torurls.flex extern/base32.h extern/base32.c"  
+
+  As an example, the passage in the file could look like this:
+  ```
+  flex_scanners = \
+   sbuf_flex_scanner.h \
+   scan_base16.flex \
+   scan_accts.flex \
+   scan_email.flex scan_email.h \
+   scan_gps.flex \
+   scan_bitcoin.flex \
+   extern/Keccak-more-compact.h extern/Keccak-more-compact.c \
+   scan_monero.flex \
+   scan_ethereum.flex \
+   scan_hwallets.flex \
+   scan_mnemonics.flex \
+   scan_domains.flex \
+   scan_torurls.flex extern/base32.h extern/base32.c
+  ```  
+
+- cp src/bulk_extractor_scanners.h src/bulk_extractor_scanners.h.bak  
+- ***Add*** to _src/bulk_extractor_scanners.h_:  
+  - Extend the list of **flex-based scanners** with:  
+    "SCANNER(bitcoin)  
+    SCANNER(monero)  
+    SCANNER(domains)  
+    SCANNER(ethereum)  
+    SCANNER(hwallets)  
+    SCANNER(mnemonics)  
+    SCANNER(torurls)"  
+
+  As an example, the passage in the file could look like this:
+  ```
+  /* flex-based scanners */
+  SCANNER(base16)
+  SCANNER(email)
+  SCANNER(accts)
+  SCANNER(gps)
+  SCANNER(bitcoin)
+  SCANNER(monero)
+  SCANNER(domains)
+  SCANNER(ethereum)
+  SCANNER(hwallets)
+  SCANNER(mnemonics)
+  SCANNER(torurls)
+  ```  
+
+- cd ~/Development  
+- git clone https://github.com/cc-code-public/bulk_extractor_2_plugins.git  
+- cd bulk_extractor_2_plugins  
+  
+  
+- cp -R extern ~/Development/bulk_extractor/src  
+- cp scan_bitcoin.flex scan_domains.flex scan_hwallets.flex scan_mnemonics.flex scan_monero.flex scan_torurls.flex scan_ethereum.flex ~/Development/bulk_extractor/src  
+  
+  
+- cd ~/Development/bulk_extractor/  
+- bash bootstrap.sh  
+- ./configure  
+- make  
 (**make install** if you want)
 
 -------------------------------------------------
@@ -78,4 +147,4 @@ make
 
 ****ADDITIONAL****  
 Currently the plugin system of bulk is not used. Instead, the plugins are integrated directly into bulk_extractor. They should therefore be available for each execution without using special configuration.
-The plugins have been tested but are still in development. Therefore they are offered as is. 
+The plugins have been tested but are still under development and more or less proof of concepts. Therefore they are offered as is. 
